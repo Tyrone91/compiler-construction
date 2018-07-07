@@ -13,4 +13,9 @@ public interface JYSymbols {
 
     public static String IF = "IF_THEN_ELSE";
     public static String WHILE = "WHILE";
+    
+    public static String PLUS = "PLUS_OP";
+    public static String MINUS = "MINUS_OP";
+    public static String MULT = "MULT_OP";
+    public static String DIV = "DIV_OP";
 }
