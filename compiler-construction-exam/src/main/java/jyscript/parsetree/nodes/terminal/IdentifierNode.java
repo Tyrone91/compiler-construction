@@ -11,6 +11,7 @@ public class IdentifierNode extends IntNode{
     public IdentifierNode(ParseTree parent, String id){
         m_Id = id;
         m_Parent = parent;
+        parent.getIdentifier(id);
     }
 
     public Integer eval(){

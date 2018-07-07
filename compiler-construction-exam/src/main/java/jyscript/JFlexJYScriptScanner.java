@@ -33,10 +33,12 @@ public class JFlexJYScriptScanner {
    * Translates characters to character classes
    */
   private static final String ZZ_CMAP_PACKED = 
-    "\11\0\1\1\1\1\1\0\1\0\1\1\22\0\1\1\3\0\1\0"+
-    "\3\0\1\13\1\14\1\7\1\6\1\0\1\5\1\3\1\10\12\2"+
-    "\7\0\4\0\1\4\25\0\6\0\32\0\1\11\1\0\1\12\7\0"+
-    "\1\0\u1fa2\0\1\0\1\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\udfe6\0";
+    "\11\0\1\1\1\1\1\0\1\0\1\1\22\0\1\1\7\0\1\14"+
+    "\1\15\1\10\1\7\1\0\1\6\1\4\1\11\12\3\1\27\1\17"+
+    "\1\0\1\16\3\0\4\2\1\5\10\2\1\36\14\2\6\0\1\21"+
+    "\3\2\1\33\1\34\1\37\1\31\1\24\2\2\1\32\1\2\1\25"+
+    "\1\2\1\23\1\2\1\22\1\35\1\26\1\2\1\20\1\30\3\2"+
+    "\1\12\1\0\1\13\7\0\1\0\u1fa2\0\1\0\1\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\udfe6\0";
 
   /** 
    * Translates characters to character classes
@@ -50,10 +52,12 @@ public class JFlexJYScriptScanner {
 
   private static final String ZZ_ACTION_PACKED_0 =
     "\1\0\1\1\1\2\1\3\1\4\1\5\1\6\1\7"+
-    "\1\10\1\11\1\12\2\0\2\2\1\0";
+    "\1\10\1\11\1\12\1\13\1\14\1\15\5\2\2\0"+
+    "\2\2\1\16\3\2\2\3\1\0\1\17\7\2\1\20"+
+    "\1\2\1\21\1\22\1\23";
 
   private static int [] zzUnpackAction() {
-    int [] result = new int[16];
+    int [] result = new int[43];
     int offset = 0;
     offset = zzUnpackAction(ZZ_ACTION_PACKED_0, offset, result);
     return result;
@@ -78,11 +82,15 @@ public class JFlexJYScriptScanner {
   private static final int [] ZZ_ROWMAP = zzUnpackRowMap();
 
   private static final String ZZ_ROWMAP_PACKED_0 =
-    "\0\0\0\15\0\32\0\47\0\47\0\47\0\47\0\47"+
-    "\0\47\0\47\0\47\0\64\0\101\0\116\0\133\0\133";
+    "\0\0\0\40\0\100\0\140\0\200\0\200\0\200\0\200"+
+    "\0\200\0\200\0\200\0\200\0\200\0\200\0\240\0\300"+
+    "\0\340\0\u0100\0\u0120\0\u0140\0\u0160\0\u0180\0\u01a0\0\100"+
+    "\0\u01c0\0\u01e0\0\u0200\0\u0220\0\u0240\0\u0240\0\100\0\u0260"+
+    "\0\u0280\0\u02a0\0\u02c0\0\u02e0\0\u0300\0\u0320\0\100\0\u0340"+
+    "\0\100\0\100\0\200";
 
   private static int [] zzUnpackRowMap() {
-    int [] result = new int[16];
+    int [] result = new int[43];
     int offset = 0;
     offset = zzUnpackRowMap(ZZ_ROWMAP_PACKED_0, offset, result);
     return result;
@@ -105,13 +113,38 @@ public class JFlexJYScriptScanner {
   private static final int [] ZZ_TRANS = zzUnpackTrans();
 
   private static final String ZZ_TRANS_PACKED_0 =
-    "\1\0\1\2\1\3\2\0\1\4\1\5\1\6\1\7"+
-    "\1\10\1\11\1\12\1\13\1\0\1\2\15\0\1\3"+
-    "\1\14\1\15\27\0\1\16\14\0\1\17\2\0\2\20"+
-    "\10\0\1\16\1\0\1\15\12\0\1\17\12\0";
+    "\1\0\1\2\1\3\1\4\1\0\1\3\1\5\1\6"+
+    "\1\7\1\10\1\11\1\12\1\13\1\14\1\15\1\16"+
+    "\1\17\2\3\1\20\1\21\2\3\1\0\1\22\2\3"+
+    "\1\23\4\3\1\0\1\2\40\0\2\3\1\0\1\3"+
+    "\12\0\7\3\1\0\10\3\3\0\1\4\1\24\1\25"+
+    "\74\0\2\3\1\0\1\3\12\0\1\3\1\26\5\3"+
+    "\1\0\10\3\2\0\2\3\1\0\1\3\12\0\2\3"+
+    "\1\27\4\3\1\0\10\3\2\0\2\3\1\0\1\3"+
+    "\12\0\7\3\1\0\4\3\1\30\1\31\2\3\2\0"+
+    "\2\3\1\0\1\3\12\0\7\3\1\0\1\3\1\32"+
+    "\6\3\2\0\2\3\1\0\1\3\12\0\7\3\1\0"+
+    "\2\3\1\33\5\3\3\0\1\34\37\0\1\35\2\0"+
+    "\2\36\32\0\2\3\1\0\1\3\12\0\2\3\1\37"+
+    "\4\3\1\0\10\3\2\0\2\3\1\0\1\3\12\0"+
+    "\4\3\1\40\2\3\1\0\10\3\2\0\2\3\1\0"+
+    "\1\3\12\0\7\3\1\0\6\3\1\41\1\3\2\0"+
+    "\2\3\1\0\1\3\12\0\4\3\1\42\2\3\1\0"+
+    "\10\3\2\0\2\3\1\0\1\3\12\0\7\3\1\0"+
+    "\5\3\1\43\2\3\3\0\1\34\1\0\1\25\35\0"+
+    "\1\35\36\0\2\3\1\0\1\3\12\0\5\3\1\44"+
+    "\1\3\1\0\10\3\2\0\2\3\1\0\1\3\12\0"+
+    "\7\3\1\0\3\3\1\45\4\3\2\0\2\3\1\0"+
+    "\1\3\12\0\7\3\1\0\2\3\1\46\5\3\2\0"+
+    "\2\3\1\0\1\3\12\0\7\3\1\0\3\3\1\47"+
+    "\4\3\2\0\2\3\1\0\1\3\12\0\6\3\1\50"+
+    "\1\0\10\3\2\0\2\3\1\0\1\3\12\0\7\3"+
+    "\1\0\7\3\1\51\2\0\2\3\1\0\1\3\12\0"+
+    "\7\3\1\0\3\3\1\52\4\3\2\0\2\3\1\0"+
+    "\1\3\12\0\7\3\1\53\10\3";
 
   private static int [] zzUnpackTrans() {
-    int [] result = new int[104];
+    int [] result = new int[864];
     int offset = 0;
     offset = zzUnpackTrans(ZZ_TRANS_PACKED_0, offset, result);
     return result;
@@ -149,10 +182,11 @@ public class JFlexJYScriptScanner {
   private static final int [] ZZ_ATTRIBUTE = zzUnpackAttribute();
 
   private static final String ZZ_ATTRIBUTE_PACKED_0 =
-    "\1\0\2\1\10\11\2\0\2\1\1\0";
+    "\1\0\3\1\12\11\5\1\2\0\10\1\1\0\14\1"+
+    "\1\11";
 
   private static int [] zzUnpackAttribute() {
-    int [] result = new int[16];
+    int [] result = new int[43];
     int offset = 0;
     offset = zzUnpackAttribute(ZZ_ATTRIBUTE_PACKED_0, offset, result);
     return result;
@@ -273,7 +307,7 @@ public class JFlexJYScriptScanner {
     char [] map = new char[0x110000];
     int i = 0;  /* index in packed string  */
     int j = 0;  /* index in unpacked array */
-    while (i < 102) {
+    while (i < 150) {
       int  count = packed.charAt(i++);
       char value = packed.charAt(i++);
       do map[j++] = value; while (--count > 0);
@@ -620,43 +654,79 @@ public class JFlexJYScriptScanner {
         case 1: 
           { /*keine Aktion*/
           }
-        case 11: break;
+        case 20: break;
         case 2: 
+          { return token(JYSymbols.IDENTIFIER, yytext() );
+          }
+        case 21: break;
+        case 3: 
           { return token(JYSymbols.NUMBER, Integer.valueOf(yytext()));
           }
-        case 12: break;
-        case 3: 
+        case 22: break;
+        case 4: 
           { return token(JYSymbols.MINUS);
           }
-        case 13: break;
-        case 4: 
+        case 23: break;
+        case 5: 
           { return token(JYSymbols.PLUS);
           }
-        case 14: break;
-        case 5: 
+        case 24: break;
+        case 6: 
           { return token(JYSymbols.MULT);
           }
-        case 15: break;
-        case 6: 
+        case 25: break;
+        case 7: 
           { return token(JYSymbols.DIV);
           }
-        case 16: break;
-        case 7: 
+        case 26: break;
+        case 8: 
           { return token(JYSymbols.LPC);
           }
-        case 17: break;
-        case 8: 
+        case 27: break;
+        case 9: 
           { return token(JYSymbols.RPC);
           }
-        case 18: break;
-        case 9: 
+        case 28: break;
+        case 10: 
           { return token(JYSymbols.LPR);
           }
-        case 19: break;
-        case 10: 
+        case 29: break;
+        case 11: 
           { return token(JYSymbols.RPR);
           }
-        case 20: break;
+        case 30: break;
+        case 12: 
+          { return token(JYSymbols.ASSIGN);
+          }
+        case 31: break;
+        case 13: 
+          { return token(JYSymbols.SEMICOLON);
+          }
+        case 32: break;
+        case 14: 
+          { return token(JYSymbols.IF);
+          }
+        case 33: break;
+        case 15: 
+          { return token(JYSymbols.VAR);
+          }
+        case 34: break;
+        case 16: 
+          { return token(JYSymbols.ELSE);
+          }
+        case 35: break;
+        case 17: 
+          { return token(JYSymbols.IS_NEG);
+          }
+        case 36: break;
+        case 18: 
+          { return token(JYSymbols.WHILE);
+          }
+        case 37: break;
+        case 19: 
+          { return token(JYSymbols.PRINT_STMT);
+          }
+        case 38: break;
         default: 
           if (zzInput == YYEOF && zzStartRead == zzCurrentPos) {
             zzAtEOF = true;

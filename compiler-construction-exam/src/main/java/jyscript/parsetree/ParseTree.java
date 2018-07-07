@@ -32,6 +32,7 @@ public class ParseTree {
         if(v == null){
             throw new UndeclaredIdentifier(id, "NO file", -1); //TODO: add line and file
         }
+        v.value(value);
     }
 
     public int getIdentifier(String name){

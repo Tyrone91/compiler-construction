@@ -1,0 +1,1 @@
+scanner still accepts float values but only integer is permitted.

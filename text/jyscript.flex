@@ -46,7 +46,6 @@ id = {letter}({letter}|{digit})*
 number = {digit}+(\.{digit}+)?(E[+\-]?{digit}+)?
 
 any = .
-varassign = \${id}
 
 %%
 
@@ -63,3 +62,15 @@ varassign = \${id}
 \}     				{return token(JYSymbols.RPC);}
 \(     				{return token(JYSymbols.LPR);}
 \)     				{return token(JYSymbols.RPR);}
+
+\=     				{return token(JYSymbols.ASSIGN);}
+\;     				{return token(JYSymbols.SEMICOLON);}
+
+var					{return token(JYSymbols.VAR);}
+print:				{return token(JYSymbols.PRINT_STMT);}
+while				{return token(JYSymbols.WHILE);}
+if					{return token(JYSymbols.IF);}
+else				{return token(JYSymbols.ELSE);}
+isNeg				{return token(JYSymbols.IS_NEG);}
+
+{id}				{return token(JYSymbols.IDENTIFIER, yytext() );}

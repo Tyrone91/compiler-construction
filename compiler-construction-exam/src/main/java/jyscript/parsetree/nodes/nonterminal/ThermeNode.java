@@ -1,6 +1,5 @@
 package jyscript.parsetree.nodes.nonterminal;
 
-import jyscript.parsetree.ParseTree;
 import jyscript.parsetree.nodes.IntNode;
 
 public class ThermeNode extends IntNode {
@@ -19,9 +18,5 @@ public class ThermeNode extends IntNode {
 
 	public Integer eval() {
 		return m_Derived.eval(m_Factor.eval());
-	}
-
-	public Integer eval(int a) {
-		return m_Derived.eval(a);
 	}
 }

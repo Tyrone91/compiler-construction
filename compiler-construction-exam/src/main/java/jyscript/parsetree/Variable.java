@@ -25,6 +25,10 @@ public class Variable {
         return m_Value;
     }
 
+    public void value(int newvalue){
+        m_Value = newvalue;
+    }
+
     public String name(){
         return m_Name;
     }

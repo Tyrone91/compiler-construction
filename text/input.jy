@@ -1,1 +1,17 @@
-10 - 3 * (3 + 3) * 2
+var a = -10 - 3 * (3 + 3) * 2;
+print: a;
+
+var b = 5;
+var c = 10;
+
+print: b + c;
+
+a = 5;
+print: 100000002;
+while(a){
+    a = a - 1;
+    print: a;
+}
+
+if( (b+c) - 15 ) print: 18; else print: 88;
+print: 200000001;
