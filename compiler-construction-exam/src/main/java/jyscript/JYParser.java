@@ -159,6 +159,7 @@ public class JYParser {
             return res;
 
         }else if(tokenIs(JYSymbols.MINUS)){
+            match(JYSymbols.MINUS);
             return new FactorNode(factor(), true); //TODO: remove recursion
 
         }else{
