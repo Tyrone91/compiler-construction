@@ -1,6 +1,5 @@
 package jyscript.parsetree.nodes.nonterminal;
 
-import jyscript.parsetree.ParseTree;
 import jyscript.parsetree.nodes.IntNode;
 
 public class FactorNode extends IntNode {

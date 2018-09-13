@@ -25,4 +25,8 @@ public interface JYSymbols {
     public static String MINUS 			= "MINUS_OP";
     public static String MULT 			= "MULT_OP";
     public static String DIV 			= "DIV_OP";
+    
+    public static String EOF			= "EOF";
+    
+    public static String UNKNOWN_TOKEN = "UNKNOWN_TOKEN";
 }

@@ -10,7 +10,27 @@ public class MultOperationNode extends ThermeDerivedNode {
         m_Right = node2;
     }
 
+    public int simpleEval(int a){
+        return a * m_Factor.eval();
+    }
+    
     public int eval(int a){
-        return m_Right.eval(a * m_Factor.eval() );
+        int res = simpleEval(a);
+        ThermeDerivedNode current = m_Right;
+        while(current != null){
+            res = current.simpleEval(res);
+            current = current.next();
+        }
+        return res;
+    }
+    
+    @Override
+    public ThermeDerivedNode next() {
+        return m_Right;
+    }
+    
+    @Override
+    public void setValue(ThermeDerivedNode value) {
+        m_Right = value;
     }
 }

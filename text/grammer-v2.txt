@@ -1,4 +1,4 @@
-Start := StatementList
+Start := StatementList EOF
 
 STATEMENT_LIST := STATEMENT STATEMENT_LIST'
 STATEMENT_LIST' := STATEMENT_LIST | €

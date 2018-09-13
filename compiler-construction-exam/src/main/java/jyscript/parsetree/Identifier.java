@@ -1,17 +1,17 @@
 package jyscript.parsetree;
 
-public class Variable {
+public class Identifier {
 
     public int m_Value;
     public String m_Name;
     public Source m_FirstAppearance;
 
-    public Variable(String name, int value, String file, int line){
+    public Identifier(String name, int value, String file, int line){
         this(name, value);
         m_FirstAppearance = new Source(file, line);
     }
 
-    public Variable(String name, int value){
+    public Identifier(String name, int value){
         m_FirstAppearance = new Source();
         m_Name = name;
         m_Value = value;

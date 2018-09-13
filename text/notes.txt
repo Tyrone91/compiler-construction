@@ -3,3 +3,5 @@ scanner still accepts float values but only integer is permitted.
 Think about variable declaration.
 
 print ;; ends parsing?
+
+parse numbers are off by one

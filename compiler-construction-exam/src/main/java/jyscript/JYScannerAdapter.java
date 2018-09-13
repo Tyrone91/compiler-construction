@@ -3,8 +3,6 @@ package jyscript;
 import java.io.IOException;
 import java.io.Reader;
 
-import jyscript.JFlexJYScriptScanner.Token;
-
 
 public class JYScannerAdapter implements JYScanner {
 
@@ -30,7 +28,7 @@ public class JYScannerAdapter implements JYScanner {
     }
 
     public int line(){
-        return m_Current.line;
+        return m_Current.line + 1;
     }
     public String file(){
         return m_File;

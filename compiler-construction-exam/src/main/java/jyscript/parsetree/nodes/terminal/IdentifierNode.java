@@ -1,20 +1,20 @@
 package jyscript.parsetree.nodes.terminal;
 
-import jyscript.parsetree.ParseTree;
+import jyscript.parsetree.IdentifierTable;
 import jyscript.parsetree.nodes.IntNode;
 
 public class IdentifierNode extends IntNode{
 
     private String m_Id;
-    private ParseTree m_Parent;
+    private IdentifierTable m_IdentifierTable;
 
-    public IdentifierNode(ParseTree parent, String id){
+    public IdentifierNode(IdentifierTable table, String id){
         m_Id = id;
-        m_Parent = parent;
-        parent.getIdentifier(id);
+        m_IdentifierTable = table;
+        m_IdentifierTable.getIdentifier(id);
     }
 
     public Integer eval(){
-        return m_Parent.getIdentifier(m_Id);
+        return m_IdentifierTable.getIdentifier(m_Id);
     }
 }

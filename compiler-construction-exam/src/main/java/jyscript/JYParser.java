@@ -1,15 +1,14 @@
 package jyscript;
 
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
-import jyscript.parsetree.ParseTree;
+import jyscript.parsetree.IdentifierTable;
 import jyscript.parsetree.nodes.ParseNode;
 import jyscript.parsetree.nodes.nonterminal.AssignmentNode;
 import jyscript.parsetree.nodes.nonterminal.DeclareNode;
@@ -32,34 +31,41 @@ import jyscript.parsetree.nodes.terminal.IdentifierNode;
 import jyscript.parsetree.nodes.terminal.NumberNode;
 
 public class JYParser {
-
-    private static Map<String, Set<String> >FIRST_OF_SET = new HashMap<>();
-
-    private static void setFirst(String terminal, String ... values){
-        FIRST_OF_SET.put(terminal, new HashSet<>(Arrays.asList(values)));
+    
+    public static interface ValueSetter<T>{
+        public void setValue(T value);
     }
+    
+    public static enum NonTerminal {FACTOR, THERME, THERME_DERIVED, EXPRESSION, EXPRESSION_DERIVED, DECLARE, ASSIGNMENT, PRINT, IF, WHILE, IS_NEG, STATEMENT}
+    
+    private static Map<NonTerminal, Set<String> >FIRST_OF_SET = new HashMap<>();
 
+    private static void setFirst(NonTerminal nonTerminal, String ... values){
+        FIRST_OF_SET.put(nonTerminal, new HashSet<>(Arrays.asList(values)));
+    }
+    
     private static void initFirstOf(){
-        setFirst("FACTOR", JYSymbols.NUMBER, JYSymbols.IDENTIFIER, JYSymbols.MINUS, JYSymbols.LPR);
-        setFirst("THERME", JYSymbols.NUMBER, JYSymbols.IDENTIFIER, JYSymbols.MINUS, JYSymbols.LPR);
-        setFirst("THERME_DERIVED", JYSymbols.MULT, JYSymbols.DIV);
-        setFirst("EXPRESSION", JYSymbols.NUMBER, JYSymbols.IDENTIFIER, JYSymbols.MINUS, JYSymbols.LPR);
-        setFirst("EXPRESSION_DERIVED", JYSymbols.PLUS, JYSymbols.MINUS);
-        setFirst("DECLARE", JYSymbols.VAR);
-        setFirst("ASSIGNMENT", JYSymbols.IDENTIFIER);
-        setFirst("PRINT", JYSymbols.PRINT_STMT);
-        setFirst("IF", JYSymbols.IF);
-        setFirst("WHILE", JYSymbols.WHILE);
-        setFirst("IS_NEG", JYSymbols.IS_NEG);
-        setFirst("STATEMENT", JYSymbols.WHILE, JYSymbols.LPC, JYSymbols.VAR, JYSymbols.IDENTIFIER, JYSymbols.PRINT_STMT, JYSymbols.IF);
+        setFirst(NonTerminal.FACTOR, JYSymbols.NUMBER, JYSymbols.IDENTIFIER, JYSymbols.MINUS, JYSymbols.LPR);
+        setFirst(NonTerminal.THERME, JYSymbols.NUMBER, JYSymbols.IDENTIFIER, JYSymbols.MINUS, JYSymbols.LPR);
+        setFirst(NonTerminal.THERME_DERIVED, JYSymbols.MULT, JYSymbols.DIV);
+        setFirst(NonTerminal.EXPRESSION, JYSymbols.NUMBER, JYSymbols.IDENTIFIER, JYSymbols.MINUS, JYSymbols.LPR);
+        setFirst(NonTerminal.EXPRESSION_DERIVED, JYSymbols.PLUS, JYSymbols.MINUS);
+        setFirst(NonTerminal.DECLARE, JYSymbols.VAR);
+        setFirst(NonTerminal.ASSIGNMENT, JYSymbols.IDENTIFIER);
+        setFirst(NonTerminal.PRINT, JYSymbols.PRINT_STMT);
+        setFirst(NonTerminal.IF, JYSymbols.IF);
+        setFirst(NonTerminal.WHILE, JYSymbols.WHILE);
+        setFirst(NonTerminal.IS_NEG, JYSymbols.IS_NEG);
+        setFirst(NonTerminal.STATEMENT, JYSymbols.WHILE, JYSymbols.LPC, JYSymbols.VAR, JYSymbols.IDENTIFIER, JYSymbols.PRINT_STMT, JYSymbols.IF);
+    }
+    
+
+    private static boolean isfirst(String token, NonTerminal nonTerminal){
+        return FIRST_OF_SET.get(nonTerminal).contains(token);
     }
 
-    private static boolean isfirst(String token, String terminal){
-        return FIRST_OF_SET.get(terminal).contains(token);
-    }
-
-    private static String firststr(String terminal){
-        return FIRST_OF_SET.get(terminal).stream().collect(Collectors.joining(","));
+    private static String firststr(NonTerminal nonTerminal){
+        return FIRST_OF_SET.get(nonTerminal).stream().collect(Collectors.joining(","));
     }
 
     static {
@@ -68,20 +74,42 @@ public class JYParser {
 
     private JYScanner m_Scanner;
     private String m_CurrentToken;
-    private ParseTree m_ParseTree;
+    private IdentifierTable m_IdentifierTable;
 
     public JYParser(JYScanner scanner){
         m_Scanner = scanner;
         m_CurrentToken = nextToken();
-        m_ParseTree = new ParseTree();
+        m_IdentifierTable = new IdentifierTable(scanner);
+    }
+    
+    public <T extends ValueSetter<T>> T recursionHelper(NonTerminal nonTerminal, Supplier<T> supplier, Supplier<T> nonFirst){
+        T first = null;
+        if(isfirstof(nonTerminal)){    		
+            first = supplier.get();
+        }else{
+            return nonFirst.get();
+        }
+        T current = first;
+        while(true){
+            if(isfirstof(nonTerminal)){
+                T tmp = supplier.get();
+                current.setValue(tmp);
+                current = tmp;
+            } else {
+                current.setValue(nonFirst.get());
+                return first;
+            }
+        }
     }
 
+    
+    @SuppressWarnings("unchecked")
     private <T> T consume(String expectedToken){
         if(!expectedToken.equals(currentToken())){
             error("Unexpected Token. Expected " + expectedToken + " but got " + currentToken());
         }
         final Object val = this.m_Scanner.tokenValue();
-        if(val == null){ // Should not happen if gramma is right.
+        if(val == null){ // Should not happen if grammar is right.
             error("Tried to consume value for token " + currentToken() + " but failed");
         }
         m_CurrentToken = nextToken();
@@ -103,13 +131,13 @@ public class JYParser {
     private void match(String token){
         String read = currentToken();
         if(!token.equals(read)){
-            error("unexpected symbol. Expected " + token + " but was " + read);
+            if(tokenIs(JYSymbols.UNKNOWN_TOKEN)){
+                error(String.format("'%s' is not a valid character", m_Scanner.tokenValue()));
+            } else {        		
+                error("unexpected symbol. Expected " + token + " but was " + read);
+            }
         }
         m_CurrentToken = nextToken();
-    }
-
-    private void error(){
-        error("");
     }
 
     private void error(String additionalMessage){
@@ -118,19 +146,33 @@ public class JYParser {
         final String msg = String.format("Parser error in %s:%s. %s", file, line, additionalMessage );
         throw new RuntimeException(msg);
     }
+    
+    private void unexpectedTokenFor(NonTerminal ecpected) {
+        if(tokenIs(JYSymbols.UNKNOWN_TOKEN)){
+            error(String.format("'%s' is not a valid character", m_Scanner.tokenValue()));
+        }else{    		
+            error("Expected tokens: " + firststr(ecpected) + " but got " + currentToken());
+        }
+    }
 
     private boolean tokenIs(String match){
         return currentToken().equals(match);
     }
 
-    private boolean isfirstof(String terminal){
-        return JYParser.isfirst(currentToken(), terminal);
+    private boolean isfirstof(NonTerminal nonTerminal){
+        return JYParser.isfirst(currentToken(), nonTerminal);
+    }
+    
+    public IdentifierTable getIdentifierTable(){
+        return m_IdentifierTable;
     }
 
     // ------------- actions ---------
 
     public ParseNode<Void> parse(){
-        return statementlist();
+        StatementListNode res = statementlist();
+        match(JYSymbols.EOF);
+        return res;
     }
 
     public StatementListNode statementlist(){
@@ -138,15 +180,18 @@ public class JYParser {
     }
 
     public StatementListNode statementlist_derived(){
-        if(isfirstof("STATEMENT")){
-            return new StatementListNode(statement(), statementlist_derived()); //TODO: remove recursion
-        }
-        return new StatementListNode();
+        return recursionHelper(NonTerminal.STATEMENT, () -> {
+            if(isfirstof(NonTerminal.STATEMENT)){
+                return new StatementListNode(statement(), null);
+            }
+            unexpectedTokenFor(NonTerminal.STATEMENT);
+            return null;
+        }, StatementListNode::new);
     }
 
     public StatementNode statement(){
         if(tokenIs(JYSymbols.WHILE)){
-        	return new StatementNode(while_stmt());
+            return new StatementNode(while_stmt());
         } else if(tokenIs(JYSymbols.LPC)){
             match(JYSymbols.LPC);
             StatementListNode res = statementlist();
@@ -155,17 +200,17 @@ public class JYParser {
 
         } else if(tokenIs(JYSymbols.IF)){
             return new StatementNode(if_stmt());
-        } else if(isfirstof("DECLARE")){
+        } else if(isfirstof(NonTerminal.DECLARE)){
             return new StatementNode(declare());
 
-        } else if(isfirstof("ASSIGNMENT")){
+        } else if(isfirstof(NonTerminal.ASSIGNMENT)){
             return new StatementNode(assignment());
 
-        } else if(isfirstof("PRINT")){
+        } else if(isfirstof(NonTerminal.PRINT)){
             return new StatementNode(print());
             
         }else{
-            error("Expected tokens: " + firststr("STATEMENT") + " but got " + currentToken());
+            unexpectedTokenFor(NonTerminal.STATEMENT);
             return null;
         }
     }
@@ -200,19 +245,19 @@ public class JYParser {
             match(JYSymbols.SEMICOLON);
             return res;
         }else{
-            error("expected tokens: " + firststr("DECLARE") + " but got " + currentToken());
+            unexpectedTokenFor(NonTerminal.DECLARE);
             return null;
         }
     }
 
     public DeclareNode declare_derived(String identiferName){
         AssignmentNode a = null;
-        m_ParseTree.declareIdentifier(identiferName); //TODO: does this make sense
+        m_IdentifierTable.declareIdentifier(identiferName); //runtime vs compiler check see DeclareNode.eval()
         if( tokenIs(JYSymbols.ASSIGN)){
             match(JYSymbols.ASSIGN);
-            a = new AssignmentNode(m_ParseTree, identiferName, expression());
+            a = new AssignmentNode(m_IdentifierTable, identiferName, expression());
         }
-        return new DeclareNode(m_ParseTree, identiferName, a);
+        return new DeclareNode(m_IdentifierTable, identiferName, a);
     }
 
     public PrintNode print(){
@@ -226,11 +271,11 @@ public class JYParser {
         if(tokenIs(JYSymbols.IDENTIFIER)){
             String identifier = consume(JYSymbols.IDENTIFIER);
             match(JYSymbols.ASSIGN);
-            AssignmentNode res = new AssignmentNode(m_ParseTree, identifier, expression());
+            AssignmentNode res = new AssignmentNode(m_IdentifierTable, identifier, expression());
             match(JYSymbols.SEMICOLON);
             return res;
         }else{
-            error("expected tokens: " + firststr("ASSIGNMENT") + " but got " + currentToken());
+            unexpectedTokenFor(NonTerminal.ASSIGNMENT);
             return null;
         }
     }
@@ -238,18 +283,21 @@ public class JYParser {
     public ExpressionNode expression(){
         return new ExpressionNode(therme(), expression_derived() );
     }
-
+    
     protected ExpressionDerivedNode expression_derived(){
-        if(tokenIs(JYSymbols.PLUS)){
-        	match(JYSymbols.PLUS);
-            return new PlusOperatorNode(therme(), expression_derived()); //TODO: remove recursion
+        return recursionHelper(NonTerminal.EXPRESSION_DERIVED, () -> {
+            if(tokenIs(JYSymbols.PLUS)){
+                match(JYSymbols.PLUS);
+                return new PlusOperatorNode(therme(), null);
 
-        }else if(tokenIs(JYSymbols.MINUS)){
+            }else if(tokenIs(JYSymbols.MINUS)){
 
-            match(JYSymbols.MINUS);
-            return new MinusOperatorNode(therme(), expression_derived()); //TODO: remove recursion
-        }
-        return new ExpressionDerivedNode();
+                match(JYSymbols.MINUS);
+                return new MinusOperatorNode(therme(), null);
+            }
+            unexpectedTokenFor(NonTerminal.EXPRESSION_DERIVED);
+            return null;
+        }, ExpressionDerivedNode::new);
     }
 
     protected ThermeNode therme(){
@@ -257,18 +305,20 @@ public class JYParser {
     }
 
     protected ThermeDerivedNode therme_derived(){
-        if(tokenIs(JYSymbols.MULT)){
+        return recursionHelper(NonTerminal.THERME_DERIVED, () -> {
+            if(tokenIs(JYSymbols.MULT)){
 
-            match(JYSymbols.MULT);
-            return new MultOperationNode(factor(), therme_derived()); //TODO: remove recursion
+                match(JYSymbols.MULT);
+                return new MultOperationNode(factor(), null);
+            }else if(tokenIs(JYSymbols.DIV)){
 
-        }else if(tokenIs(JYSymbols.DIV)){
-
-            match(JYSymbols.DIV);
-            return new DivOperationNode(factor(), therme_derived()); //TODO: remove recursion
-
-        }
-        return new ThermeDerivedNode();
+                match(JYSymbols.DIV);
+                return new DivOperationNode(factor(), null);
+            }
+            unexpectedTokenFor(NonTerminal.THERME_DERIVED);
+            return null;
+        }, ThermeDerivedNode::new);
+        
     }
 
     protected IsNegativNode isNeg(){
@@ -280,27 +330,27 @@ public class JYParser {
     }
 
     protected FactorNode factor(){
+        boolean uniaryMinus = false;
+        while(tokenIs(JYSymbols.MINUS)){
+            match(JYSymbols.MINUS);
+            uniaryMinus = !uniaryMinus;
+        }
         if(tokenIs(JYSymbols.NUMBER)){
-            return new FactorNode(new NumberNode( consume(JYSymbols.NUMBER) ));
+            return new FactorNode(new NumberNode( consume(JYSymbols.NUMBER) ), uniaryMinus);
 
         }else if(tokenIs(JYSymbols.IDENTIFIER)){
-            return new FactorNode( new IdentifierNode(m_ParseTree, consume(JYSymbols.IDENTIFIER)));
+            return new FactorNode( new IdentifierNode(m_IdentifierTable, consume(JYSymbols.IDENTIFIER)), uniaryMinus);
 
         }else if(tokenIs(JYSymbols.LPR)){
             match(JYSymbols.LPR);
-            System.out.println("Expression read");
-            FactorNode res =  new FactorNode(expression());
+            FactorNode res =  new FactorNode(expression(), uniaryMinus);
             match(JYSymbols.RPR);
             return res;
-
-        }else if(tokenIs(JYSymbols.MINUS)){
-            match(JYSymbols.MINUS);
-            return new FactorNode(factor(), true); //TODO: remove recursion
-
+            
         }else if(tokenIs(JYSymbols.IS_NEG)) {
-            return new FactorNode(isNeg()); //TODO: remove recusion
+            return new FactorNode(isNeg(), uniaryMinus);
         }else {
-            error("expected on of " + firststr("FACTOR") + " but was " + currentToken());
+            unexpectedTokenFor(NonTerminal.FACTOR);
             return null;
         }
     }

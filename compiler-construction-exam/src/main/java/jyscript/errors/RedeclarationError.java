@@ -1,9 +1,12 @@
 package jyscript.errors;
 
-import jyscript.parsetree.Variable;
+import jyscript.parsetree.Identifier;
 
 public class RedeclarationError extends RuntimeException {
-    public RedeclarationError(Variable former, Variable  newer){
-        //TODO: finsish work;
+    
+    private static final long serialVersionUID = 1L;
+
+    public RedeclarationError(Identifier former, Identifier redeclared){
+        super(String.format("Identifier '%s' was already declared in '%s'. Redclaration in '%s'", former.name(), former.fistAppearance(), redeclared.fistAppearance() ));
     }
 }

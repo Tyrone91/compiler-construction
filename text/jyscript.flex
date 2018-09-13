@@ -9,7 +9,7 @@ package jyscript;
 %type Token
 
 %eofval{
-  return token("EOF");
+  return token(JYSymbols.EOF);
 %eofval}
 
 %{
@@ -43,7 +43,7 @@ ws = {delim}+
 letter = [A-Za-z]
 digit = [0-9]
 id = {letter}({letter}|{digit})*
-number = {digit}+(\.{digit}+)?(E[+\-]?{digit}+)?
+number = 0 | [1-9]{digit}*
 
 any = .
 
@@ -74,3 +74,4 @@ else				{return token(JYSymbols.ELSE);}
 isNeg				{return token(JYSymbols.IS_NEG);}
 
 {id}				{return token(JYSymbols.IDENTIFIER, yytext() );}
+{any}               	{return token(JYSymbols.UNKNOWN_TOKEN, yytext() );}

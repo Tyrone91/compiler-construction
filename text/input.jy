@@ -1,6 +1,5 @@
 var a = -10 - 3 * (3 + 3) * 2;
 print: a;
-
 var b = 5;
 var c = 10;
 
@@ -13,5 +12,9 @@ while(a){
     print: a;
 }
 
-if( (b+c) - 15 ) print: 18; else print: 88;
-print: 200000001;
+if( (b+c) - 15 ) print: 1; else print: 2;
+{
+    print: 200000001;
+    print: 20 / 5;
+    print: -----4;
+}
