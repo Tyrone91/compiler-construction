@@ -33,8 +33,6 @@ import jyscript.parsetree.nodes.terminal.NumberNode;
 
 public class JYParser {
 
-    
-
     private static Map<String, Set<String> >FIRST_OF_SET = new HashMap<>();
 
     private static void setFirst(String terminal, String ... values){
@@ -78,7 +76,7 @@ public class JYParser {
         m_ParseTree = new ParseTree();
     }
 
-    private <T>  T consume(String expectedToken){
+    private <T> T consume(String expectedToken){
         if(!expectedToken.equals(currentToken())){
             error("Unexpected Token. Expected " + expectedToken + " but got " + currentToken());
         }
@@ -164,9 +162,7 @@ public class JYParser {
             return new StatementNode(assignment());
 
         } else if(isfirstof("PRINT")){
-            StatementNode n = new StatementNode(print());
-            match(JYSymbols.SEMICOLON);
-            return n;
+            return new StatementNode(print());
             
         }else{
             error("Expected tokens: " + firststr("STATEMENT") + " but got " + currentToken());
@@ -221,7 +217,9 @@ public class JYParser {
 
     public PrintNode print(){
         match(JYSymbols.PRINT_STMT);
-        return new PrintNode(expression());
+        PrintNode n = new PrintNode(expression());
+        match(JYSymbols.SEMICOLON);
+        return n;
     }
 
     public AssignmentNode assignment(){
