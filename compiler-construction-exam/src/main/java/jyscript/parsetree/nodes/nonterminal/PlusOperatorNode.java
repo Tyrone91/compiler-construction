@@ -13,7 +13,7 @@ public class PlusOperatorNode extends ExpressionDerivedNode implements ValueSett
     }
     
     @Override
-    public int simpleEval(int a) {
+    public int eval(int a) {
         int res = simpleEval(a);
         ExpressionDerivedNode current = m_Right; 
         while(current != null){
@@ -23,10 +23,12 @@ public class PlusOperatorNode extends ExpressionDerivedNode implements ValueSett
         return res;
     }
     
-    public int eval(int a){
-        return m_Right.eval(a + m_Therme.eval() );
+    @Override
+    public int simpleEval(int a){
+        return a + m_Therme.eval();
     }
     
+    @Override
     public void setValue(ExpressionDerivedNode node){
         m_Right = node;
     }

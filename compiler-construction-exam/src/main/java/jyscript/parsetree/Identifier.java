@@ -1,5 +1,9 @@
 package jyscript.parsetree;
 
+/**
+ * Representation of an identifier in the code.
+ * If includes the name, value and the first appearance in the code.
+ */
 public class Identifier {
 
     public int m_Value;
@@ -33,6 +37,7 @@ public class Identifier {
         return m_Name;
     }
 
+    @Override
     public String toString(){
         return String.format("var %s = %s. First in %s", m_Name, String.valueOf(m_Value), m_FirstAppearance.toString());
     }

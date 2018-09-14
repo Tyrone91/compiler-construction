@@ -1,5 +1,8 @@
 package jyscript;
 
+/**
+ * Interface that is needed for the {@link JYParser}.
+ */
 public interface JYScanner {
 
     public String nextToken();

@@ -12,6 +12,7 @@ public class MinusOperatorNode extends ExpressionDerivedNode implements ValueSet
         m_Right = node2;
     }
 
+    @Override
     public int eval(int a){
         int res = simpleEval(a);
         ExpressionDerivedNode current = m_Right; 

@@ -7,7 +7,10 @@ import jyscript.JYScanner;
 import jyscript.errors.RedeclarationError;
 import jyscript.errors.UndeclaredIdentifier;
 
-
+/**
+ * Symbol table that keeps track of all declared {@link Identifier}'s.
+ * Will also handle re-declaration and undeclared errors.
+ */
 public class IdentifierTable {
 
     private Map<String, Identifier> m_SymbolTable;

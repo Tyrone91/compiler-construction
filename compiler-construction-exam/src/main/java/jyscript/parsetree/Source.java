@@ -1,5 +1,8 @@
 package jyscript.parsetree;
 
+/**
+ * Helper class to hold information of the first appearance of an {@link Identifier}.
+ */
 public class Source {
 
     private String m_FileName;
@@ -14,6 +17,7 @@ public class Source {
         this("UNKNOWN_FILE", -1);
     }
 
+    @Override
     public String toString(){
         return m_FileName + ":" + m_Line;
     }
